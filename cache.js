@@ -1560,3 +1560,16 @@ HttpCache.set(API_GetWorkbookPageByGtp,
     }
     `
     );
+
+HttpCache.set(
+    API_GetMarkId,
+    `
+    {
+        "Data": "1473480204172177408",
+        "Total": 0,
+        "Success": true,
+        "ErrorCode": 0,
+        "Msg": "请求成功！"
+    }
+    `
+);
