@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 引入样式文件 -->
+    <link rel="stylesheet" type="text/css" href="vant-index.css" />
+    <link rel="stylesheet" href="index.css" />
+    <!-- 引入 Vue 和 Vant 的 JS 文件 -->
+    <script src="vue@next.js"></script>
+    <script src="vant.min.js"></script>
+    <script src="vue-router.js"></script>
+    <script src="define.js"></script>
+    <script src="api.js"></script>
+    <script src="cache.js"></script>
+    <script src="tools.js"></script>
+</head>
+<body>
+<div id="app">
+    <router-view v-slot="{ Component, route }">
+        <transition :enter-active-class="route.meta.transitionEnter" :leave-active-class="route.meta.transitionLeave">
+            <component :is="Component" />
+        </transition>
+    </router-view>
+</div>
+
+<script src="pages/home.js"></script>
+
+<script>
+
+function showLoading(message){
+    vant.Toast.loading({
+        message,
+        duration: 0,
+        forbidClick: true,
+    });
+}
+function hideLoading(){
+    vant.Toast.clear();
+}
+
+function toast(msg){
+    vant.Toast(msg);
+}
+
+async function start(){
+    const { createRouter, createWebHistory, createWebHashHistory } = VueRouter
+
+    var routes = [
+        { path: '/', name:'home', component: await Home() },
+    ];
+
+    const router = createRouter({
+        history: createWebHistory(),
+        routes,
+    })
+
+    // #app
+    const app = Vue.createApp({});
+
+    app.config.globalProperties.global = {
+        //全局变量
+    };
+
+    app.use(vant);
+
+    // 通过 CDN 引入时不会自动注册 Lazyload 组件
+    // 可以通过下面的方式手动注册
+    app.use(vant.Lazyload);
+    app.use(vant.ConfigProvider);
+    app.use(vant.RadioGroup);
+    app.use(vant.NoticeBar);
+    app.use(router);
+
+    app.mount('#app');
+
+    router.replace({ path: '/', replace: true });
+
+    window.Dialog = vant.Dialog;
+}
+start();
+</script>
+
+</body>
+</html>

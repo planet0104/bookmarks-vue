@@ -1,0 +1,173 @@
+::-webkit-scrollbar {
+    width: 0 !important;
+}
+::-webkit-scrollbar {
+    width: 0 !important;height: 0;
+}
+
+:root {
+    --title-bar-height: 52px;
+    --screen-width: 1920px;
+    --screen-height: 1080px;
+    --_18px: 18px;
+    --_24px: 24px;
+    --_14px: 14px;
+    --_16px: 16px;
+    --_30px: 30px;
+    --_20px: 20px;
+    --_26px: 26px;
+    --_28px: 28px;
+    --_35px: 35px;
+    --_40px: 40px;
+    --_50px: 50px;
+    --_52px: 52px;
+    --_60px: 60px;
+    --_70px: 70px;
+    --_75px: 75px;
+    --_78px: 78px;
+    --_80px: 80px;
+    --_90px: 90px;
+    --_100px: 100px;
+    --_120px: 120px;
+    --_280px: 280px;
+    --_240px: 240px;
+    --_200px: 200px;
+    --_160px: 160px;
+    --_180px: 180px;
+    --_10px: 10px;
+    --_5px: 5px;
+    --_8px: 8px;
+    --_6px: 6px;
+    --_1px: 1px;
+    --_2px: 2px;
+    --_3px: 3px;
+}
+
+.van-badge{
+    line-height: var(--_24px) !important;
+}
+
+.van-checkbox__label{
+    font-size: var(--_28px);
+}
+
+#app{
+    font-size: var(--_14px);
+    width: var(--screen-width);
+    height: var(--screen-height);
+    overflow: hidden;
+    user-select:none;
+    color: var(--default-text-color);
+    padding: 10pt;
+}
+.pad-row{
+    padding-top: var(--_3px);
+    padding-bottom: var(--_3px);
+}
+
+canvas{
+    border: solid 1px #eee;
+}
+
+  .canvas{
+    position: relative;
+  }
+  .canvas .tip{
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    border-radius: 3px;
+    padding: 2px;
+    border: solid 2px rgb(200, 50, 50);
+    background-color: rgba(66, 66, 66, 0.6);
+    font-weight: bold;
+    color: white;
+    font-size: 13px;
+  }
+
+  .edit_tip{
+    border-radius: 2px;
+    padding: 5px;
+    border: solid 2px rgb(200, 50, 50);
+    background-color: rgba(66, 66, 66, 0.6);
+    color: white;
+    font-size: 13px;
+  }
+
+  .root{
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .content{
+    display: flex;
+    justify-content: left;
+  }
+
+  .copy-mark{
+    font-size: 10px;
+    padding: 1px;
+    margin-left: 2px;
+  }
+
+  .answer_content{
+    overflow-y: scroll;
+    display: inline-block;
+    height: 930px;
+  }
+
+  .tree{
+    user-select: none;
+    overflow-y:scroll;
+    width: 390px;
+    height: 900px;
+    border: solid 1px #ccc;
+  }
+
+  ul li span:hover{
+    background-color: #eee;
+    cursor: pointer;
+  }
+
+  ul li span.selected{
+    color: blue;
+    font-weight: bold;
+    background-color: yellow;
+  }
+
+  ul li span.template{
+    border-radius: 3px;
+    border: dashed 2px #f55;
+    background-color: #eee;
+    margin-left: 5px;
+    padding-left: 3px;
+    padding-right: 3px;
+  }
+
+  ul li span.answer{
+    border-radius: 3px;
+    border: solid 2px #f55;
+    background-color: #eee;
+    margin-left: 5px;
+    padding-left: 3px;
+    padding-right: 3px;
+  }
+  .file_div{
+    height: 0px;width: 0px; overflow:hidden;
+  }
+
+  .ul-level{
+    font-size: 13pt;
+  }
+
+  .ul-stem{
+    padding-left: 10pt;
+  }
+
+  .ul-sub-stem{
+    padding-left: 10pt;
+  }
+
+  .ul-answer-item{
+    padding-left: 10pt;
+  }

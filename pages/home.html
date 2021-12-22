@@ -1,0 +1,254 @@
+<div>
+    <van-row>
+        <van-col span="4">
+            <van-button @click="change_item_level" type="primary" size="small">AB级转换</van-button>&nbsp;
+            <van-button @click="get_mark_id" type="success" size="small">添加项</van-button>&nbsp;
+            <van-button @click="delete_item" type="danger" size="small">删除项</van-button>&nbsp;
+            <van-button @click="start_upload" type="warning" size="small">保存</van-button>&nbsp;
+            <div class="pad-row">
+                <!-- <van-button type="warning" size="small">清缓存</van-button>&nbsp; -->
+            </div>
+            <div class="pad-row">
+                <van-button @click="pickers.bookTypes.show = true" plain icon="arrow-down" icon-position="right" type="primary" size="small">{{pickers.bookTypes.value}}</van-button>&nbsp;
+                <van-button @click="pickers.bookPapers.show = true" plain icon="arrow-down" icon-position="right" type="primary" size="small">{{pickers.bookPapers.value}}</van-button>&nbsp;
+            </div>
+            <div class="pad-row">
+                <van-button @click="pickers.grades.show = true" plain icon="arrow-down" icon-position="right" type="primary" size="small">{{ pickers.grades.value  }}</van-button>&nbsp;
+                <van-button @click="pickers.terms.show = true" plain icon="arrow-down" icon-position="right" type="primary" size="small">{{ pickers.terms.value  }}</van-button>&nbsp;
+                <van-button @click="pickers.pageIds.show = true" plain icon="arrow-down" icon-position="right" type="primary" size="small">{{ pickers.pageIds.value  }}</van-button>&nbsp;
+            </div>
+            <div class="pad-row">
+                <van-button @click="pickers.chapters.show = true" plain icon="arrow-down" icon-position="right" type="primary" size="small">{{ pickers.chapters.value  }}</van-button>&nbsp;
+            </div>
+            <!-- 列表 -->
+            <div>
+                <!-- 循环每一个级别 -->
+                <ul class="ul-level" v-for="(level, index) in items">
+                    <li>
+                        <span :id="level.id" @click="onItemClick([{index, id:level.id}])"  :class="selected_item_id==level.id?'selected':'default'">
+                            {{ level.name }}
+                        </span>
+                    </li>
+                    <!-- 循环每一个题干 -->
+                    <ul class="ul-stem" v-for="(stem, stem_idx) in level.items">
+                        <li>
+                            <!-- 
+                                //选中题目级别
+                                { level_index, level_id },
+                                //选中题干
+                                { stem_idx, stem_id }
+                            -->
+                            <span :title="stem.MarkId" :id="stem.MarkId"
+                            @click="onItemClick([ {index, id:level.id}, { index:stem_idx, id: stem.MarkId } ])"
+                            :class="selected_item_id==stem.MarkId?'selected':'default'">
+                                大题{{ stem_idx+1 }}
+                            </span>
+                            <!-- 循环每一个子题干 -->
+                            <ul class="ul-sub-stem" v-for="(sub_stem, sub_stem_idx) in stem.Models">
+                                <li>
+                                    <!--
+                                        //选中题目级别
+                                        SelectIndex::new(level_index, level_id.clone()),
+                                        //选中题干
+                                        SelectIndex::new(stem_idx, stem_id.clone()),
+                                        //选中小题
+                                        SelectIndex::new(sub_stem_idx, sub_stem_id.clone()),
+                                    -->
+                                    <span :title="sub_stem.MarkId" :id="sub_stem.MarkId"
+                                    @click="onItemClick([ {index, id:level.id}, { index:stem_idx, id: stem.MarkId }, { index:sub_stem_idx, id:sub_stem.MarkId }])"
+                                    :class="selected_item_id==sub_stem.MarkId?'selected':'default'">
+                                        小题{{ sub_stem_idx+1 }}
+                                    </span>
+                                    <!-- 循环每个答案框 -->
+                                    <ul class="ul-answer-item" v-for="(answer_item, answer_item_idx) in sub_stem.Models">
+                                        <li>
+                                            <!--
+                                                //选中题目级别
+                                                SelectIndex::new(level_index, level_id.clone()),
+                                                //选中题干
+                                                SelectIndex::new(stem_idx, stem_id.clone()),
+                                                //选中小题
+                                                SelectIndex::new(sub_stem_idx, sub_stem_id.clone()),
+                                                //选中答案
+                                                SelectIndex::new(answer_item_idx, answer_stem_id.clone()),
+                                            -->
+                                            <span :title="answer_item.MarkId" :id="answer_item.MarkId"
+                                            @click="onItemClick([ {index, id:level.id}, { index:stem_idx, id: stem.MarkId }, { index:sub_stem_idx, id:sub_stem.MarkId }, { index:answer_item_idx, id:answer_item.MarkId }])"
+                                            :class="selected_item_id==answer_item.MarkId?'selected':'default'">
+                                                答案{{ answer_item_idx+1 }}
+                                                <button @click="copyAnswerArea" :style="selected_item_id==answer_item.MarkId?'display:none;':'display:none;'" class="copy-mark">复制￬</button>
+                                            </span>
+                                            <!--
+                                                //选中题目级别
+                                                SelectIndex::new(level_index, level_id1.clone()),
+                                                //选中题干
+                                                SelectIndex::new(stem_idx, stem_id1.clone()),
+                                                //选中小题
+                                                SelectIndex::new(sub_stem_idx, sub_stem_id1.clone()),
+                                                //选中答案
+                                                SelectIndex::new(answer_item_idx, answer_stem_id1.clone()),
+                                                //选中标记区
+                                                SelectIndex::new(0, format!("{}-0", answer_stem_id1)),
+                                            -->
+                                            <span
+                                                :id="answer_item.MarkId+'-0'"
+                                                :class="selected_item_id==answer_item.MarkId+'-0'?'template selected':'template default'"
+                                                @click="onItemClick([ {index, id:level.id}, { index:stem_idx, id: stem.MarkId }, { index:sub_stem_idx, id:sub_stem.MarkId }, { index:answer_item_idx, id:answer_item.MarkId }, { index:0, id:answer_item.MarkId+'-0' }])"
+                                                >
+                                                标记区
+                                            </span>
+                                            <span
+                                                :id="answer_item.MarkId+'-1'"
+                                                :class="selected_item_id==answer_item.MarkId+'-1'?'template selected':'template default'"
+                                                @click="onItemClick([ {index, id:level.id}, { index:stem_idx, id: stem.MarkId }, { index:sub_stem_idx, id:sub_stem.MarkId }, { index:answer_item_idx, id:answer_item.MarkId }, { index:1, id:answer_item.MarkId+'-1' }])"
+                                                >
+                                                答案区
+                                            </span>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </ul>
+            </div>
+        </van-col>
+        <van-col span="9">
+            <div class="canvas">
+                <canvas ref="canvas" @click="onPointerClick($event)" @pointermove="onPointerMove($event)" @pointerup="onPointerUp($event)" @pointerdown="onPointerDown($event)" :width="canvas_width" :height="canvas_height"></canvas>
+                <div class="tip">{{ tip_text }}</div>
+            </div>
+        </van-col>
+        <van-col span="11">
+            <div v-if="is_sub_question_stem()">
+                <van-radio-group @change="change_combination_type" v-model="combination_type">
+                    <van-radio name="1">答案固定模式</van-radio>
+                    <van-radio name="2">答案组合模式</van-radio>
+                </van-radio-group>
+                <van-notice-bar icon="warning-o">接口无法保存CombinationType字段!</van-notice-bar>
+            </div>
+            <div v-if="is_select_answer_area()" class="answer_content">
+                <div class="edit_tip">
+                    <div>——————————————————类型——————————————————</div>
+                    <div>识别类型：口算题、列竖式计算题目，选择“2(智能识别)”，其他题型选择“1智能识别”</div>
+                    <div>题型：应用题选“应用题”，其他的都选“填空题”</div>
+                    <div>答案框识别类型：除带圈数字选择“带圈数字”，其他都选“普通填空”</div>
+                    <div>——————————————————答案—————————————————</div>
+                    <div>1）智能识别题目，多个答案用竖线分割</div>
+                    <div>2）普通填空题，每个填空都要添加一个答案，竖线用于分割多个相似的答案</div>
+                    <div>3）应用题解题步骤，每种解题步骤都要添加一个步骤类型，每种解题步骤有多重相似的步骤，用竖线分割</div>
+                    <div>4）平方写2，例如平方米写成m2；</div>
+                    <div></div>
+                </div>
+                <div class="pad-row">
+                    <van-button @click="pickers.answerTypeIdList.show = true" plain icon="arrow-down" icon-position="right" type="primary" size="small">{{pickers.answerTypeIdList.value}}</van-button>&nbsp;
+                    <van-button @click="pickers.answerItemTypeIdList.show = true" plain icon="arrow-down" icon-position="right" type="primary" size="small">{{pickers.answerItemTypeIdList.value}}</van-button>&nbsp;
+                    <van-button @click="pickers.answerTypeList.show = true" plain icon="arrow-down" icon-position="right" type="primary" size="small">{{pickers.answerTypeList.value}}</van-button>&nbsp;
+                </div>
+                <div>{"√ × ÷ 0~9(带圈数字)、=(等号) 、neq(不等号)、triangles(三角形)、 gt(大于号)、lt(小于号)"}</div>
+                <div class="pad-row">
+                    <van-button @click="add_answer_solution" type="primary" size="small">添加一类解题步骤</van-button>&nbsp;
+                </div>
+                <!-- 循环展示所有解题步骤 -->
+                <div v-for="(solution, idx) in selected_mark.Answers[0].Solutions" style="padding:5pt">
+                    <textarea :id="'answer_textarea_'+idx" @keyup="change_answer_solution(idx)" @paste="change_answer_solution(idx)"
+                    style="width: 400pt;" rows="8" cols="120" placeholder="多个相似的解题步骤用竖线分割" :value="solution.StepContent"></textarea>
+                    <button @click="delete_answer_solution(idx)">删除</button>
+                </div>
+                <div style="padding:5pt">
+                    <textarea id="answer_textarea"
+                        @keyup="change_answer()" @paste="change_answer()"
+                        style="width: 400pt;" rows="8" cols="120" placeholder="多个答案用竖线分割（可以加回车）" :value="selected_mark.Answers[0].Replys"></textarea>
+                </div>
+                <div style="padding:5pt">
+                    <span>结果：</span>
+                    <input @keyup="change_answer_result()" @paste="change_answer_result()" id="input_result" style="width: 400pt;" placeholder="结果" :value="selected_mark.Answers[0].Result" />
+                </div>
+                <div style="padding:5pt">
+                    <span>单位：</span>
+                    <input @keyup="change_answer_unit()" @paste="change_answer_unit()" id="input_unit" style="width: 400pt;" placeholder="单位" :value="selected_mark.Answers[0].Unit" />
+                </div>
+            </div>
+        </van-col>
+    </van-row>
+    <!-- 选择标记book类型 -->
+    <van-popup v-model:show="pickers.bookTypes.show" position="bottom">
+        <van-picker
+            :columns="pickers.bookTypes.items"
+            :default-index="pickers.bookTypes.index"
+            @confirm="pickers.bookTypes.onConfirm"
+            @cancel="pickers.bookTypes.show = false"
+        />
+    </van-popup>
+    <!-- 选择关联试卷 -->
+    <van-popup v-model:show="pickers.bookPapers.show" position="bottom">
+        <van-picker
+            :columns="pickers.bookPapers.items"
+            :default-index="pickers.bookPapers.index"
+            @confirm="pickers.bookPapers.onConfirm"
+            @cancel="pickers.bookPapers.show = false"
+        />
+    </van-popup>
+    <!-- 选择年级 -->
+    <van-popup v-model:show="pickers.grades.show" position="bottom">
+        <van-picker
+            :columns="pickers.grades.items"
+            :default-index="pickers.grades.index"
+            @confirm="pickers.grades.onConfirm"
+            @cancel="pickers.grades.show = false"
+        />
+    </van-popup>
+    <van-popup v-model:show="pickers.terms.show" position="bottom">
+        <van-picker
+            :columns="pickers.terms.items"
+            :default-index="pickers.terms.index"
+            @confirm="pickers.terms.onConfirm"
+            @cancel="pickers.terms.show = false"
+        />
+    </van-popup>
+    <van-popup v-model:show="pickers.pageIds.show" position="bottom">
+        <van-picker
+            :columns="pickers.pageIds.items"
+            :default-index="pickers.pageIds.index"
+            @confirm="pickers.pageIds.onConfirm"
+            @cancel="pickers.pageIds.show = false"
+        />
+    </van-popup>
+    <!-- 章节级联选择 -->
+    <van-popup v-model:show="pickers.chapters.show" round position="bottom">
+        <van-cascader
+            v-model="pickers.chapters.currentValue"
+            title="请选择章节"
+            :options="pickers.chapters.options"
+            @close="pickers.chapters.show = false"
+            @finish="pickers.chapters.onFinish"
+        />
+    </van-popup>
+    <!-- 智能识别、非智能识别 -->
+    <van-popup v-model:show="pickers.answerTypeIdList.show" position="bottom">
+        <van-picker
+            :columns="pickers.answerTypeIdList.items"
+            :default-index="pickers.answerTypeIdList.index"
+            @confirm="pickers.answerTypeIdList.onConfirm"
+            @cancel="pickers.answerTypeIdList.show = false"
+        />
+    </van-popup>
+    <!-- 题型 -->
+    <van-popup v-model:show="pickers.answerItemTypeIdList.show" position="bottom">
+        <van-picker
+            :columns="pickers.answerItemTypeIdList.items"
+            :default-index="pickers.answerItemTypeIdList.index"
+            @confirm="pickers.answerItemTypeIdList.onConfirm"
+            @cancel="pickers.answerItemTypeIdList.show = false"
+        />
+    </van-popup>
+    <!-- 答案类型(二级题型) -->
+    <van-popup v-model:show="pickers.answerTypeList.show" position="bottom">
+        <van-picker
+            :columns="pickers.answerTypeList.items"
+            :default-index="pickers.answerTypeList.index"
+            @confirm="pickers.answerTypeList.onConfirm"
+            @cancel="pickers.answerTypeList.show = false"
+        />
+    </van-popup>
+</div>
